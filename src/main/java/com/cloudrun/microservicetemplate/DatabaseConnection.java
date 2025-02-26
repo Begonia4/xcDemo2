@@ -1,4 +1,5 @@
-package com.tryagain.war;
+package com.cloudrun.microservicetemplate;
+
 
 import javax.naming.Context;
 import javax.naming.InitialContext;

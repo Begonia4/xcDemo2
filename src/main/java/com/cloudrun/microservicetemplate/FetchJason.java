@@ -4,7 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList; 
+import java.util.ArrayList;
+
+import javax.sql.DataSource;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -16,30 +19,6 @@ import com.cloudrun.microservicetemplate.Milesplits.Data;
 @RestController
 @RequestMapping("/api")
 public class FetchJason {
-
-    @GetMapping("/getusers")
-    public ResponseEntity<String> getUsers() {
-        try (Connection conn = DatabaseConnector.connectUsers()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("success"); 
-
-        } catch (SQLException e) {
-            String result = e.getMessage();
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } 
-        
-    }
-
-    @PostMapping("/postusers")
-    public ResponseEntity<String> postUSers() {
-        try (Connection conn = DatabaseConnector.connectUsers()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("success"); 
-
-        } catch (SQLException e) {
-            String result = e.getMessage();
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } 
-        
-    }
 
     
     @PostMapping(path = "/meetinfo", consumes="application/json") 
@@ -56,8 +35,9 @@ public class FetchJason {
 
         String api = "https://www.milesplit.com/api/v1/meets/" + number1 + number2 + number3 + number4 + number5 + number6 + "/performances?isMeetPro=0&fields=id%2CmeetName%2CteamName%2CfirstName%2ClastName%2Cgender%2CgenderName%2CdivisionName%2CgradYear%2CeventName%2CeventDistance%2Cround%2CroundName%2Cheat%2Cunits%2Cmark%2Cplace%2CstatusCode&m=GET";
                         
+        DataSource dataSource = CloudSqlConnectionPoolFactory.createConnectionPool();
 
-        try (Connection conn = DatabaseConnector.connectTestMeet()) {
+        try (Connection conn = dataSource.getConnection()) {
             ArrayList<Milesplits.Data> result = TestingMilesplit.listMilesplit(api, schoolName);
             String meetName = result.get(0).meetName().replaceAll(" ", "_");
             ArrayList<String> athleteArray = DatabaseOperations.athleteArray(result);
@@ -84,7 +64,9 @@ public class FetchJason {
     
     @GetMapping("/seasoninfo")
     public ResponseEntity<ArrayList<Athletes>> getSeasonData() {
-        try (Connection conn = DatabaseConnector.connectTestMeet()) {
+        DataSource dataSource = CloudSqlConnectionPoolFactory.createConnectionPool();
+
+        try (Connection conn = dataSource.getConnection()) {
             ArrayList<String> tableNames = DatabaseOperations.finalSqlDataArray(conn);
             ArrayList<String> athleteArrayTotal = DatabaseOperations.getDatabaseNames(conn);
             ArrayList<Athletes> array = DatabaseOperations.seasonInfo(conn, tableNames, athleteArrayTotal);
@@ -97,7 +79,9 @@ public class FetchJason {
 
     @GetMapping("/deleteinfo")
     public ResponseEntity<String> deleteSeasonInfo() {
-        try (Connection conn = DatabaseConnector.connectTestMeet()) {
+        DataSource dataSource = CloudSqlConnectionPoolFactory.createConnectionPool();
+
+        try (Connection conn = dataSource.getConnection()) {
             ArrayList<String> tableNames = DatabaseOperations.finalSqlDataArray(conn);
             DatabaseOperations.deleteSeason(conn, tableNames);
             return ResponseEntity.status(HttpStatus.CREATED).body("Check the database");

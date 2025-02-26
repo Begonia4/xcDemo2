@@ -1,4 +1,5 @@
-package com.tryagain.war;
+package com.cloudrun.microservicetemplate;
+
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

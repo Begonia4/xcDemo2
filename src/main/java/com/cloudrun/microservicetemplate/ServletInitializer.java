@@ -1,4 +1,5 @@
-package com.tryagain.war;
+package com.cloudrun.microservicetemplate;
+
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

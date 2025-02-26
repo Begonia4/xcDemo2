@@ -1,4 +1,5 @@
-package com.tryagain.war;
+package com.cloudrun.microservicetemplate;
+
 
 public class Greeting {
     private final long id;
