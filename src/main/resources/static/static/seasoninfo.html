@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang = "en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Season Info </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">	
+    <link rel="stylesheet" href = "css/seasoninfo.css"> </link>
+</head>
+    <nav>
+        <button class="nav" id = 'home-page'> Return to Account Page </button>
+    </nav>
+<main>
+<body>
+    <img src="videos/background1.jpg" alt="girls-running">
+    <header><h1> Season Info </h1></header>
+
+    <main>
+        <div id="main">
+        </div>
+        <div id="quote"> </div>
+        <script>
+            document.querySelector('#home-page').addEventListener('click', (e) => {
+						e.preventDefault();
+						document.location = 'AccountPage.html';
+                });
+            
+            let quotes = [
+                    "Run into your unknown.",
+                    "The miracle isn\'t that I finished. The miracle is that I had the courage to start.",
+                    "I don\'t run to add days to my life, I run to add life to my days.",
+                    "Run often. Run long. But never outrun your joy of running.",
+                    "Don\'t dream of winning, train for it!",
+                    "Whether a mile or a marathon, you get there the same way… one step at a time.",
+                    "Fight fatigue with focus.",
+                    "We are designed to run, and we increase our chance of daily happiness when we do so.",
+                    "Running is the greatest metaphor for life, because you get out of it what you put into it.",
+                    "Never limit where running can take you.",
+                    "Train smart. Train hard. Have fun!",
+                    "If it doesn\'t challenge you, it doesn\'t change you.",
+                    "You are truly your own hero in running.",
+                    "I\'ve learned that it\'s what you do with the miles, rather than how many you\'ve run",
+                    "If your legs are tired, run with your heart!"
+                ];
+
+                let x = Math.floor(Math.random() * 15);
+
+                document.getElementById("quote").innerHTML = quotes[x];
+
+                // Make API call to get the information displayed 
+
+                async function populatePage() {
+                    const response = await fetch('api/seasoninfo', {
+                        method: 'GET',
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
+                    });
+
+                    console.log()
+
+
+                    const obj = await response.json();
+
+                    console.log("data " + JSON.stringify(obj));
+
+                    // For each element of the JavaScript object
+
+                    for (const element of obj) {
+                       
+                        let name = element.name;
+                        let sql = element.sqlData;
+                        for (const x of sql) {
+                            let athleteString;
+                            const para = document.createElement("p"); 
+                            athleteString = name + " - ";
+                            if (x.meetName != null && x.meetName != "") {
+                                athleteString = athleteString + " Meet: " + x.meetName;
+                            }
+                            if (x.place != null && x.place != "") {
+                                athleteString = athleteString + " Place: " + x.place; 
+                            }
+                            if (x.eventName != null && x.eventName != "") {
+                                athleteString = athleteString + " Event Name: " + x.eventName;
+                            }
+                            if (x.round != null && x.round != "") {
+                                athleteString = athleteString + " Round: " + x.round;
+                            }
+                            if (x.roundName != null && x.roundName != "") {
+                                athleteString = athleteString + " Round Name: " + x.roundName;
+                            }
+                            if (x.heat != null && x.heat != "") {
+                                athleteString = athleteString + " heat: " + x.heat;
+                            }
+                            if (x.mark != null && x.mark != "") {
+                                athleteString = athleteString + " Mark: " + x.mark;
+                            }
+                            if (x.divisionName != null && x.divisionName != "") {
+                                athleteString = athleteString + " Division Name: " + x.divisionName;
+                            }
+                            if (x.genderName != null && x.genderName != "") {
+                                athleteString = athleteString + " Gender: " + x.genderName;
+                            } else if (x.gender != null && x.gender != "") {
+                                athleteString = athleteString + " Gender: " + x.gender;
+                            }
+                            if (x.gradYear != null && x.gradYear != "") {
+                                athleteString = athleteString + " Grad Year: " + x.gradYear;
+                            }
+
+                            para.innerHTML = athleteString;
+
+                            document.querySelector('#main').appendChild(para);
+                            
+                        }
+                        const space = document.createElement("p");
+                        space.id = "space";
+                        space.innerHTML = "\n";
+                        document.querySelector("#main").appendChild(space);
+
+                    }
+                }
+
+                populatePage();
+
+        </script>
+    </main>
+</body>
+</main>
